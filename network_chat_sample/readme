@@ -1,0 +1,22 @@
+# Network Chat Sample
+
+This is a sample network chat application used to showcase agent-based network fault injection. It's very bare-bones and not intended for any sort of actual use.
+
+## Features
+
+- Send messages to the host
+- View what messages others have sent, with their IPs
+- See the latency of each message based on send-time and receive-time
+
+## Installation
+
+1. Clone the repository: `git clone https://github.com/your-username/your-repo.git`
+2. Install the required dependencies: `npm install`
+3. Start the application: `npm start`
+
+## Usage
+
+1. Open the application in your web browser.
+2. Sign up for a new account or log in with your existing credentials.
+3. Start a new chat or join an existing one.
+4. Send messages, share files, and enjoy chatting with others!

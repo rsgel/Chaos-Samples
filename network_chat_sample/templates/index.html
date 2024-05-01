@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <head>
+        <title>Network Chat</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+            }
+            .section {
+                margin-bottom: 2em;
+            }
+            .section h2 {
+                color: #333;
+                border-bottom: 1px solid #ddd;
+            }
+            #messages {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            #messages th, #messages td {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Network Chat</h1>
+        <div class="section">
+            <h2>Chat History</h2>
+            <table id="messages">
+                <thead>
+                    <tr>
+                        <th>IP Address</th>
+                        <th>Message</th>
+                        <th>Latency (ms)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for message in messages %}
+                        <tr>
+                            <td>{{ message.ip }}</td>
+                            <td>{{ message.text }}</td>
+                            <td>{{ message.latency }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="section">
+            <h2>Send a Message</h2>
+            <form method="post" action="/send">
+                <input type="text" name="message" placeholder="Type your message">
+                <button type="submit">Send</button>
+            </form>
+            <script>
+                $('form').on('submit', function(event) {
+                    event.preventDefault();
+                    var message = $('input[name="message"]').val();
+                    var startTime = Date.now();
+                    $.post('/send', {message: message}, function() {
+                        $.post('/receive', {message: message}, function() {
+                            var latency = Date.now() - startTime;
+                            var row = '<tr><td>' + data.ip + '</td><td>' + data.message + '</td><td>' + latency + '</td></tr>';
+                            $('#messages tbody').append(row);
+                        });
+                    });
+                });
+                </script>
+        </body>
+        </html>
