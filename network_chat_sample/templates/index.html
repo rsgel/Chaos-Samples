@@ -8,11 +8,16 @@
                 font-family: Arial, sans-serif;
             }
             .section {
-                margin-bottom: 2em;
+                width: 80%;
+                margin: auto;
             }
             .section h2 {
                 color: #333;
                 border-bottom: 1px solid #ddd;
+            }
+            h1 {
+                text-align: center;
+                color: #333;
             }
             #messages {
                 width: 100%;
@@ -21,6 +26,11 @@
             #messages th, #messages td {
                 border: 1px solid #ddd;
                 padding: 8px;
+            }
+            table {
+                width: 100%;
+                max-width: 800px;
+                margin: auto;
             }
         </style>
     </head>
@@ -31,6 +41,7 @@
             <table id="messages">
                 <thead>
                     <tr>
+                        <th>Received At</th>
                         <th>IP Address</th>
                         <th>Message</th>
                         <th>Latency (ms)</th>
@@ -39,6 +50,7 @@
                 <tbody>
                     {% for message in messages %}
                         <tr>
+                            <td>{{ message.id }}</td>
                             <td>{{ message.ip }}</td>
                             <td>{{ message.text }}</td>
                             <td>{{ message.latency }}</td>
@@ -58,14 +70,14 @@
                     event.preventDefault();
                     var message = $('input[name="message"]').val();
                     var startTime = Date.now();
-                    $.post('/send', {message: message}, function() {
-                        $.post('/receive', {message: message}, function() {
-                            var latency = Date.now() - startTime;
-                            var row = '<tr><td>' + data.ip + '</td><td>' + data.message + '</td><td>' + latency + '</td></tr>';
-                            $('#messages tbody').append(row);
+                    $.post('/send', {message: message}, function(response) {
+                        var message_id = response.id;
+                        $.post('/receive', {id: message_id}, function(message) {
+                           var row = '<tr><td>' + message.received_time + '</td><td>' + message.ip + '</td><td>' + message.text + '</td></tr>';
+                           $('#messages tbody').append(row);
                         });
                     });
                 });
-                </script>
+            </script>
         </body>
         </html>
