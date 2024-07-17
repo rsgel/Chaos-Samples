@@ -1,0 +1,64 @@
+{
+    "type": "Microsoft.Chaos/experiments",
+    "id": "{EXPERIMENT_ID}",
+    "name": "{EXPERIMENT_NAME}",
+    "identity": {
+        "type": "SystemAssigned"
+    },
+    "tags": {},
+    "location": "eastus",
+    "properties": {
+        "provisioningState": "Succeeded",
+        "selectors": [
+            {
+                "type": "List",
+                "targets": [
+                    {
+                        "id": "/subscriptions/{YOUR-SUBSCRIPTION-ID}/resourceGroups/{RESOURCE_GROUP_ID}/providers/Microsoft.DocumentDB/databaseAccounts/{COSMOS_DB_ACCOUNT}/providers/Microsoft.Chaos/targets/Microsoft-CosmosDB",
+                        "type": "ChaosTarget"
+                    }
+                ],
+                "id": "Selector1"
+            }
+        ],
+        "steps": [
+            {
+                "name": "Step1",
+                "branches": [
+                    {
+                        "name": "Branch1",
+                        "actions": [
+                            {
+                                "selectorId": "Selector1",
+                                "type": "discrete",
+                                "parameters": [
+                                    {
+                                        "key": "regionName",
+                                        "value": "East US"
+                                    }
+                                ],
+                                "name": "urn:csci:microsoft:cosmosdb:OfflineRegion/1.0"
+                            },
+                            {
+                                "type": "delay",
+                                "duration": "PT20M",
+                                "name": "urn:csci:microsoft:chaosStudio:TimedDelay/1.0"
+                            },
+                            {
+                                "selectorId": "Selector1",
+                                "type": "discrete",
+                                "parameters": [
+                                    {
+                                        "key": "regionName",
+                                        "value": "East US"
+                                    }
+                                ],
+                                "name": "urn:csci:microsoft:cosmosdb:OnlineRegion/1.0"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

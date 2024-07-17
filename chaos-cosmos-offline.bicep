@@ -7,7 +7,7 @@ param experimentName string
 @description('Desired region for the experiment, targets, and capabilities')
 param location string = resourceGroup().location
 
-// Define Chaos Studio experiment steps for a basic Virtual Machine Shutdown experiment
+// Define Chaos Studio experiment steps for a basic Cosmos DB Offline/Online experiment
 param experimentSteps array = [
   {
     name: 'Step1'
@@ -28,7 +28,7 @@ param experimentSteps array = [
           }
           {
             type: 'delay'
-            duration: 'PT5M'
+            duration: 'PT20M'
             name: 'urn:csci:microsoft:chaosStudio:TimedDelay/1.0'
           }
           {
@@ -53,7 +53,7 @@ resource cosmosdb 'Microsoft.DocumentDb/databaseAccounts@2023-04-15' existing = 
   name: targetName
 }
 
-// Deploy the Chaos Studio target resource to the Virtual Machine
+// Deploy the Chaos Studio target resource to the Cosmos DB
 resource chaosTarget 'Microsoft.Chaos/targets@2023-11-01' = {
   name: 'Microsoft-CosmosDB'
   location: location
@@ -73,7 +73,6 @@ resource chaosTarget 'Microsoft.Chaos/targets@2023-11-01' = {
 // Define the role definition for the Chaos experiment
 resource chaosRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
   scope: cosmosdb
-  // In this case, Virtual Machine Contributor role -- see https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles 
   name: '230815da-be43-4aae-9cb4-875f7bd000aa'
 }
 
@@ -89,7 +88,7 @@ resource chaosRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01
 }
 
 // Deploy the Chaos Studio experiment resource
-resource chaosExperiment 'Microsoft.Chaos/experiments@2022-10-01-preview' = {
+resource chaosExperiment 'Microsoft.Chaos/experiments@2024-01-01' = {
   name: experimentName
   location: location // Doesn't need to be the same as the Targets & Capabilities location
   identity: {
